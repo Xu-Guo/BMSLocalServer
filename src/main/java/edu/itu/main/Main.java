@@ -30,7 +30,7 @@ public class Main {
 //        System.out.println(ldt2);
         serialPort = SerialUtils.getInstance();
         SerialUtils.openPort(serialPort);
-
+        System.out.println("hello");
     }
 
 }

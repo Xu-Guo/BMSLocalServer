@@ -27,7 +27,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="BMSLocalServer" target="1.5" />
+      <module name="BMSLocalServer" target="1.8" />
       <module name="BMSLocalserver" target="1.5" />
     </bytecodeTargetLevel>
   </component>
