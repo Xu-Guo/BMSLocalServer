@@ -8,10 +8,8 @@ import java.util.ArrayList;
  * Created by xuxu on 10/16/16.
  */
 public class SetCmd extends CommonCmd{
-    public final char CMD_TYPE = CMD_TYPE_SET;
-    public char cmdAction = Character.MAX_VALUE;
-
-    public String cmdData = null;
+    private char CmdDataLength = 0;
+    private char[] cmdData;
 
     public SetCmd(char cmdAction, LocalDateTime ldt) {
         this.cmdAction = cmdAction;
@@ -30,11 +28,15 @@ public class SetCmd extends CommonCmd{
         {
             str += c + "\t";
         }
-        this.cmdData = str;
+        //this.cmdData = str;
     }
 
-
-    public static void main(String[] args) {
-
+    @Override
+    public char[] doPackage() {
+        return new char[0];
     }
+
+//    public static void main(String[] args) {
+//
+//    }
 }

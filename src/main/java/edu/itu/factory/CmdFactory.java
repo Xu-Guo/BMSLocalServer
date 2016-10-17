@@ -5,4 +5,7 @@ package edu.itu.factory;
  */
 public class CmdFactory {
 
+    public final char CMD_TYPE_QUERY = 0x01;
+    public final char CMD_TYPE_SET = 0x10;
+
 }
