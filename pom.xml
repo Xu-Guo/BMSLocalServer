@@ -51,7 +51,7 @@
                         <manifest>
                             <!-- Jar file entry point -->
                             <addClasspath>true</addClasspath>
-                            <mainClass>itu.edu.amazon.lambda.App</mainClass>
+                            <mainClass>edu.itu.main.Main</mainClass>
                             <classpathPrefix>dependency-jars/</classpathPrefix>
                         </manifest>
                     </archive>
