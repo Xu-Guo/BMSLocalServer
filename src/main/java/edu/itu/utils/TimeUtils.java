@@ -1,23 +1,29 @@
 package edu.itu.utils;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.TimeZone;
+import java.util.Calendar;
+
 
 /**
  * Created by xuxu on 10/17/16.
  */
 public class TimeUtils {
-    public static LocalDateTime getDateTimeFromTimestamp(long timestamp) {
-        if (timestamp == 0)
-            return null;
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), TimeZone
-                .getDefault().toZoneId());
+
+
+    public static void main(String[] args) {
+
+        //Date date = new Date(System.currentTimeMillis());
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+
+
+        System.out.println(cal.get(Calendar.YEAR));
+        System.out.println(cal.get(Calendar.MONTH) + 1);
+        System.out.println(cal.get(Calendar.DATE));
+        System.out.println(cal.get(Calendar.HOUR));
+        System.out.println(cal.get(Calendar.MINUTE));
+        System.out.println(cal.get(Calendar.SECOND));
+
     }
 
-    public static LocalDate getDateFromTimestamp(long timestamp) {
-        LocalDateTime date = getDateTimeFromTimestamp(timestamp);
-        return date == null ? null : date.toLocalDate();
-    }
 }

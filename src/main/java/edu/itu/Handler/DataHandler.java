@@ -8,7 +8,7 @@ import edu.itu.data.CommonRawData;
 public abstract class DataHandler {
     Double CHARGE_SENSE_RESISTANCE = 0.1;
     Double DISCHARGE_SENSE_RESISTANCE = 5.0;
-    Double CHARGE_OPAMP_GAIN = 7.0;
+    Double CHARGE_OPAMP_GAIN = 100.0;
     int ADC_FULL_SCALE_VALUE = 4095;
     double TEMPERATURE_FACTOR = 1000.0;
 

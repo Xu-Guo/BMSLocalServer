@@ -1,5 +1,6 @@
 package edu.itu.data;
 
+import edu.itu.Handler.CmdHandler;
 import edu.itu.Handler.DataHandler;
 
 import java.util.List;
@@ -10,4 +11,5 @@ import java.util.List;
 public abstract class CommonRawData {
     public abstract void setData(List<Integer> list);
     public abstract void notifyDataHandler(DataHandler dh, CommonRawData rd);
+    public abstract void notifyCmdHandler(CmdHandler ch);
 }

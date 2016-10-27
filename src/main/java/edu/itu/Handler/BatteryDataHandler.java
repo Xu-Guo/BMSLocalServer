@@ -1,7 +1,6 @@
 package edu.itu.Handler;
 
 
-
 import edu.itu.data.CommonRawData;
 import edu.itu.data.RawBatteryData;
 import edu.itu.utils.JDBCUtils;
@@ -9,6 +8,7 @@ import edu.itu.utils.JDBCUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  * Created by xuxu on 10/16/16.
@@ -16,8 +16,9 @@ import java.sql.SQLException;
 public class BatteryDataHandler extends DataHandler {
     @Override
     public void handleData(CommonRawData rd) {
-        System.out.println("get raw battery data!");
+        //System.out.println("get raw battery data!");
         if (rd instanceof RawBatteryData) {
+
             mysqlInsertData((RawBatteryData) rd);
         }
     }
@@ -30,23 +31,22 @@ public class BatteryDataHandler extends DataHandler {
         try {
             ps = conn.prepareStatement(sql);
             ps.setInt(1, 0X01);
-            ps.setInt(2, (rbd.getChCur()));
+            ps.setInt(2, rbd.getChCur());
             //ps.setDouble(3, (rbd.getDisCur() / ADC_FULL_SCALE_VALUE / DISCHARGE_SENSE_RESISTANCE));
-            ps.setInt(3, (rbd.getDisCur()));
+            ps.setInt(3, rbd.getDisCur());
             ps.setDouble(4, rbd.getTemperature() / TEMPERATURE_FACTOR);
-            ps.setInt(5,rbd.getStateOfCharge());
+            ps.setInt(5, rbd.getStateOfCharge());
             ps.setInt(6, rbd.getBatteryStatus());
             ps.setInt(7, rbd.getChargerStatus());
             ps.setTimestamp(8, rbd.getTimestamp());
-
-
-            ps.execute();
-            System.out.println(rbd.getTimestamp());
             System.out.println("insert a line!!");
 
+            ps.execute();
+            //System.out.println("insert into batteryData (battery_id, ch_cur, dis_cur, temperature, stateofcharge, battery_status, charger_status, timestp) values (" + 1 + "," + rbd.getChCur() + "," + rbd.getDisCur() + "," + rbd.getTemperature() / TEMPERATURE_FACTOR + "," + rbd.getStateOfCharge() + "," + rbd.getBatteryStatus() + "," + rbd.getChargerStatus() + "," + rbd.getTimestamp() + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
+
             JDBCUtils.close(ps);
         }
 

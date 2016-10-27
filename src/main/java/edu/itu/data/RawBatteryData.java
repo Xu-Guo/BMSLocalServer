@@ -1,6 +1,7 @@
 package edu.itu.data;
 
 import edu.itu.Handler.BatteryDataHandler;
+import edu.itu.Handler.CmdHandler;
 import edu.itu.Handler.DataHandler;
 
 import java.sql.Timestamp;
@@ -21,6 +22,8 @@ public class RawBatteryData extends CommonRawData {
     private int batteryStatus;
     private int chargerStatus;
     private Timestamp timestamp;
+
+    private CmdHandler ch = new CmdHandler();
 
     public int getStateOfCharge() {
         return stateOfCharge;
@@ -95,6 +98,24 @@ public class RawBatteryData extends CommonRawData {
         System.out.println("StateOfCharge = " + this.getStateOfCharge());
     }
 
+    public boolean compareTime(LocalDateTime time1, LocalDateTime time2){
+        if(time1 == null || time2 == null){
+            System.out.println("one or all time is null");
+            return true;
+        }
+        int sysHour = 0;
+        if(time2.getHour() > 12){
+            sysHour = time2.getHour() - 12;
+        }
+        if(time1.getMinute() != time2.getMinute()){
+            return false;
+        }
+        if(Math.abs(time1.getSecond() - time2.getSecond()) > 3){
+
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public void notifyDataHandler(DataHandler dh, CommonRawData rd) {
@@ -102,40 +123,57 @@ public class RawBatteryData extends CommonRawData {
     }
 
     @Override
+    public void notifyCmdHandler(CmdHandler ch) {
+        ch.sendSetTimeCommand(System.currentTimeMillis());
+    }
+
+    @Override
     public void setData(List<Integer> list) {
-        System.out.println("Set RBD!");
 
-        this.setChCur(((list.get(3).intValue() << 8) + list.get(4).intValue()) * 1000 * 10 / 4095 / 75); // in unit of mA
-
-        this.setDisCur(((list.get(5).intValue() << 8) + list.get(6).intValue()) * 1000 / 4095 / 5); // in unit of mA
-
-        this.setTemperature((list.get(7).intValue() << 8) + list.get(8).intValue());
-
-        this.setStateOfCharge(list.get(9).intValue());
-
-        this.setBatteryStatus(list.get(10).intValue());
-
-        this.setChargerStatus(list.get(11).intValue());
-        //System.out.println("Set RBD2!");
-        int year = (list.get(12).intValue() << 8) + list.get(13).intValue();
-        int month = list.get(14).intValue();
-        int day = list.get(15).intValue();
-        int hour = list.get(16).intValue();
-        int min = list.get(17).intValue();
-        int sec = list.get(18).intValue();
-
-        LocalDateTime time = LocalDateTime.of(year, Month.of(month), day, hour, min, sec);
-        Timestamp timestamp = Timestamp.valueOf(time);
-        //LocalDateTime ldt2 = timestamp.toLocalDateTime();
-
-        this.timestamp = timestamp;
-
-        this.print();
-
-        //if no current in/out, means battery is not charging or discharging, then we will not notify data handler to insert data to data base.
-        if(this.getBatteryStatus() == 0){
+        if(list == null){
+            System.out.println("content is null");
             return;
         }
+        System.out.println("Set RBD!");
+
+        this.setChCur(((list.get(3)<< 8) + list.get(4)) * 1000 * 10 / 4095 / 100); // in unit of mA
+
+        this.setDisCur(((list.get(5) << 8) + list.get(6)) * 1000 / 4095 / 5); // in unit of mA
+
+        this.setTemperature((list.get(7) << 8) + list.get(8));
+
+        this.setStateOfCharge(list.get(9));
+
+        this.setBatteryStatus(list.get(10));
+
+        this.setChargerStatus(list.get(11));
+        //System.out.println("Set RBD2!");
+        int year = (list.get(12) << 8) + list.get(13);
+        int month = list.get(14);
+        int day = list.get(15);
+        int hour = list.get(16);
+        int min = list.get(17);
+        int sec = list.get(18);
+
+
+        LocalDateTime time = LocalDateTime.of(year, Month.of(month), day, hour, min, sec);
+
+        this.timestamp = Timestamp.valueOf(time);
+        //LocalDateTime sysTime = LocalDateTime.now();
+
+        //check if board time is sync with local host system, if not, send time sync command.
+
+//        if(!compareTime(time,sysTime)){
+//            System.out.println("++++++here i am+++++++");
+//            //this.timestamp = Timestamp.valueOf(sysTime);
+//            //notifyCmdHandler(ch);
+//        }else{
+//            this.timestamp = Timestamp.valueOf(time);
+//        }
+
+
+        //this.print();
+
         notifyDataHandler(bdh, this);
     }
 

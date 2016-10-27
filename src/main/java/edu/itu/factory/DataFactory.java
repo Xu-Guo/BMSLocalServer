@@ -9,8 +9,8 @@ import edu.itu.data.RawCmdData;
  */
 public class DataFactory {
 
-    private static int TYPE_DATA = 0x10;
-    private static int TYPE_COMMAND = 0x11;
+    private static final int TYPE_DATA = 0x10;
+    private static final int TYPE_COMMAND = 0x11;
 
     private static RawBatteryData rbd = new RawBatteryData();
     private static RawCmdData rcd = new RawCmdData();

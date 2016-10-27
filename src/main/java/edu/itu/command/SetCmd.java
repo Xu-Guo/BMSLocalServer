@@ -1,42 +1,59 @@
 package edu.itu.command;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 /**
  * Created by xuxu on 10/16/16.
  */
-public class SetCmd extends CommonCmd{
-    private char CmdDataLength = 0;
-    private char[] cmdData;
+public class SetCmd extends CommonCmd implements Packageable{
+    private int cmdDataLength = 0;
+    private ArrayList<Integer> cmdData = new ArrayList<>();
 
-    public SetCmd(char cmdAction, LocalDateTime ldt) {
-        this.cmdAction = cmdAction;
-        ArrayList<Character> a = new ArrayList<>();
-        a.add((char)((ldt.getYear() >> 8) & 0xFF));
-        a.add((char)(ldt.getYear() & 0xFF));
-        a.add((char)(ldt.getMonthValue() & 0xFF));
-        a.add((char)(ldt.getDayOfMonth() & 0xFF));
-        a.add((char)(ldt.getHour() & 0xFF));
-        a.add((char)(ldt.getMinute() & 0xFF));
-        a.add((char)(ldt.getSecond() & 0xFF));
-
-        String str = "";
-
-        for (Character c : a)
-        {
-            str += c + "\t";
+    public SetCmd(long time) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time);
+        cmdData.add(cal.get(Calendar.YEAR) >> 8 & 0xff);
+        cmdData.add(cal.get(Calendar.YEAR) & 0xff);
+        cmdData.add(cal.get(Calendar.MONTH) + 1); //Month start from 0 here.
+        cmdData.add(cal.get(Calendar.DAY_OF_MONTH));
+        int hour = 0;
+        if(cal.get(Calendar.AM_PM) == Calendar.PM){
+            hour = cal.get(Calendar.HOUR) + 12;
+        }else{
+            hour = cal.get(Calendar.HOUR);
         }
-        //this.cmdData = str;
+        cmdData.add(hour);
+        cmdData.add(cal.get(Calendar.MINUTE));
+        cmdData.add(cal.get(Calendar.SECOND));
+
+        this.cmdDataLength = cmdData.size();
+
+        this.cmdType = CMD_TYPE_SET;
+        this.cmdAction = CMD_ACTION_SET_TIME;
     }
 
     @Override
-    public char[] doPackage() {
-        return new char[0];
-    }
+    public int[] doPackage() {
+        int total_length = this.cmdDataLength + 3;
 
-//    public static void main(String[] args) {
-//
-//    }
+        ArrayList<Integer> packagedData = new ArrayList<>();
+        packagedData.add(START_FLAG);
+        packagedData.add(total_length);
+        packagedData.add(cmdType);
+        packagedData.add(cmdAction);
+        packagedData.add(cmdDataLength);
+        packagedData.addAll(cmdData);
+        packagedData.add(END_FLAG);
+
+        int[] finalData = new int[packagedData.size()];
+        for(int i = 0;i < finalData.length;i++) {
+            finalData[i] = packagedData.get(i);
+            System.out.print(finalData[i] + " ");
+        }
+        System.out.println(" ");
+
+        return finalData;
+    }
 }

@@ -1,6 +1,7 @@
 package edu.itu.data;
 
 import edu.itu.Handler.CmdDataHandler;
+import edu.itu.Handler.CmdHandler;
 import edu.itu.Handler.DataHandler;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class RawCmdData extends CommonRawData {
     private int commandAction;
     private List<Integer> data;
     private CmdDataHandler cdh = new CmdDataHandler();
+    private CmdHandler ch = new CmdHandler();
 
 
     public RawCmdData() {
@@ -26,7 +28,10 @@ public class RawCmdData extends CommonRawData {
 
     @Override
     public void setData(List<Integer> list) {
-
+        if(list == null){
+            System.out.println("cmd content is null");
+            return;
+        }
         //do something here
         notifyDataHandler(cdh, this);
 
@@ -36,5 +41,10 @@ public class RawCmdData extends CommonRawData {
     @Override
     public void notifyDataHandler(DataHandler dh, CommonRawData rd) {
         cdh.handleData(this);
+    }
+
+    @Override
+    public void notifyCmdHandler(CmdHandler ch) {
+        //do nothing here.
     }
 }

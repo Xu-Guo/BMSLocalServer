@@ -56,8 +56,17 @@ public class SerialData {
             System.out.println("null content!!");
             return false;
         }
+
+        for (Integer i:content) {
+            System.out.print(i.intValue());
+            System.out.print(" ");
+        }
+        System.out.println("");
+
+
         if (content.size() == 0 || content.get(0).intValue() != 0x68 || content.get(content.size() - 1).intValue() != 0x88) {
             content = null;
+            System.out.println("++++++++++++++++content incorrect++++++++++++++");
             return false;
         } else {
             return true;
@@ -66,21 +75,22 @@ public class SerialData {
 
     public int getSerialDataType() {
 //        System.out.println("xxxx=" + content.get(1).intValue());
-        return content.get(1).intValue();
+        return content.get(1);
     }
 
     public void setRawData() {
 
-        if(null == content){
-            System.out.println("content is null");
-            return;
-        }
-        if (this.isValid() == false) {
+
+        if (!this.isValid()) {
             return;
         }
 
         CommonRawData data = DataFactory.createRawData(getSerialDataType());
-        data.setData(content);
+        if(content != null){
+            data.setData(content);
+        }else {
+            System.out.println("+++++++content is null+++");
+        }
     }
 
 
