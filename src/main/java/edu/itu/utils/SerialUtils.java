@@ -28,6 +28,10 @@ public class SerialUtils {
             }
             return null;
         } else {
+            for(String pn : portNames) {
+                System.out.print(pn+"  ");
+            }
+            System.out.println();
             return portNames[0];
         }
     }
